@@ -4,7 +4,7 @@ with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="study_buddy",
+    name="study-buddy",
     version="0.1",
     author="Minh",
     packages=find_packages(),
