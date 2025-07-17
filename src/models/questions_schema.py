@@ -1,5 +1,6 @@
 from typing import List
 from pydantic import BaseModel, Field, validator
+from common.constants import BLANK
 
 class MCQuestion(BaseModel):
 
@@ -14,7 +15,7 @@ class MCQuestion(BaseModel):
         return str(llm_response)
 
 class FillBlankQuestion(BaseModel):
-    question: str = Field(description="The question text with '_____' for the blank")
+    question: str = Field(description=f"The question text with {BLANK} for the blank")
     answer: str = Field(description="The correct word or phrase for the blank")
 
     @validator('question', pre=True)
