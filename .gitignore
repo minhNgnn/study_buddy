@@ -1,3 +1,5 @@
 venv
 .env
 *.egg-info
+logs/
+results/

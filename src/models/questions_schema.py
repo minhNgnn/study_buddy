@@ -1,11 +1,11 @@
 from typing import List
 from pydantic import BaseModel, Field, validator
-from common.constants import BLANK
+from src.common.constants import BLANK
 
 class MCQuestion(BaseModel):
 
     question: str = Field(description="The question text")
-    option: List[str] = Field(description="List of 4 questions")
+    options: List[str] = Field(description="List of 4 questions")
     correct_answer : str = Field(description="The correct answer from the options")
 
     @validator('question', pre=True)

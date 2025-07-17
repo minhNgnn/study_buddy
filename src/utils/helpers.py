@@ -4,7 +4,7 @@ import pandas as pd
 from src.generator.question_generator import QuestionGenerator
 
 def rerun():
-    st.session_state['rerun_trigger'] = not st.sesstion_state.get('rerun_trigger', False)
+    st.session_state['rerun_trigger'] = not st.session_state.get('rerun_trigger', False)
 
 class QuizManager:
     def __init__(self):
