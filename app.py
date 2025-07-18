@@ -2,7 +2,7 @@ import os
 import streamlit as st
 from dotenv import load_dotenv
 from src.utils.helpers import *
-from src.generator.question_generator import QuestionGenerator
+from src.generator.question_factory import QuestionFactory, MCQFactory, FillBlankFactory
 load_dotenv()
 
 
@@ -49,13 +49,19 @@ def main():
     if st.sidebar.button("Generate Quiz"):
         st.session_state.quiz_submitted = False
 
-        generator = QuestionGenerator()
+        if question_type == "Multiple Choice":
+            factory = MCQFactory()
+        else:
+            factory = FillBlankFactory()
+
         succces = st.session_state.quiz_manager.generate_questions(
-            generator,
-            topic,question_type,difficulty,num_questions
+            factory,
+            topic,
+            difficulty,
+            num_questions
         )
 
-        st.session_state.quiz_generated= succces
+        st.session_state.quiz_generated = succces
         rerun()
 
     if st.session_state.quiz_generated and st.session_state.quiz_manager.questions:

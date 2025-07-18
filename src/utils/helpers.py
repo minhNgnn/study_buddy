@@ -1,7 +1,8 @@
 import os
 import streamlit as st
 import pandas as pd
-from src.generator.question_generator import QuestionGenerator
+from src.generator.question_factory import MCQFactory, FillBlankFactory, QuestionFactory
+from src.models.questions_schema import Question, MCQuestion, FillBlankQuestion
 
 def rerun():
     st.session_state['rerun_trigger'] = not st.session_state.get('rerun_trigger', False)
@@ -12,16 +13,15 @@ class QuizManager:
         self.user_answers = []
         self.results =[]
 
-    def generate_questions(self, generator:QuestionGenerator , topic:str , question_type:str , difficulty:str , num_questions:int):
+    def generate_questions(self, factory:QuestionFactory , topic:str , difficulty:str , num_questions:int):
         self.questions=[]
         self.user_answers=[]
         self.results=[]
 
         try:
             for _ in range(num_questions):
-                if question_type == "Multiple Choice":
-                    question = generator.generate_mcq(topic,difficulty.lower())
-
+                question = factory.create_question(topic, difficulty.lower())
+                if isinstance(question, MCQuestion):
                     self.questions.append({
                         'type' : 'MCQ',
                         'question' : question.question,
@@ -29,14 +29,14 @@ class QuizManager:
                         'correct_answer': question.correct_answer
                     })
 
-                else:
-                    question = generator.generate_fill_blank(topic,difficulty.lower())
-
+                elif isinstance(question, FillBlankQuestion):
                     self.questions.append({
                         'type' : 'Fill in the blank',
                         'question' : question.question,
                         'correct_answer': question.answer
                     })
+                else:
+                    raise ValueError("Unknown question type")
         except Exception as e:
             st.error(f"Error generating question {e}")
             return False
