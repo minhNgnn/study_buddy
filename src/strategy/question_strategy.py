@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
+from src.generator.question_factory import QuestionFactory
 import streamlit as st
 
 
 class QuestionStrategy(ABC):
     @abstractmethod
-    def generate(self, factory, topic, difficulty):
+    def generate(self, factory: QuestionFactory, topic, difficulty):
         pass
 
     @abstractmethod
@@ -18,7 +19,7 @@ class QuestionStrategy(ABC):
 
 class MCQStrategy(QuestionStrategy):
     def generate(self, factory, topic, difficulty):
-        question = factory.create_question(topic, difficulty)
+        question = factory.create("mcq", topic, difficulty)
         return {
             "type": "MCQ",
             "question": question.question,
@@ -40,7 +41,7 @@ class MCQStrategy(QuestionStrategy):
 
 class FillBlankStrategy(QuestionStrategy):
     def generate(self, factory, topic, difficulty):
-        question = factory.create_question(topic, difficulty)
+        question = factory.create("fillblank", topic, difficulty)
         return {
             "type": "Fill in the blank",
             "question": question.question,
