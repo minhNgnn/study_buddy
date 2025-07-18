@@ -1,7 +1,6 @@
 import os
 import streamlit as st
 import pandas as pd
-from src.generator.question_factory import QuestionFactory
 from src.strategy.question_strategy import QuestionStrategy
 
 
@@ -17,7 +16,7 @@ class QuizManager:
 
     def generate_questions(
         self,
-        factory: QuestionFactory,
+        qtype: str,
         strategy: QuestionStrategy,
         topic: str,
         difficulty: str,
@@ -29,7 +28,7 @@ class QuizManager:
 
         try:
             for _ in range(num_questions):
-                q = strategy.generate(factory, topic, difficulty.lower())
+                q = strategy.generate(qtype, topic, difficulty.lower())
                 self.questions.append(q)
         except Exception as e:
             st.error(f"Error generating question {e}")

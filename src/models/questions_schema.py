@@ -14,9 +14,11 @@ class Question(ABC, BaseModel):
 
 
 class MCQuestion(Question):
+    type: str = "mcq"
     options: List[str] = Field(description="List of 4 questions")
     correct_answer: str = Field(description="The correct answer from the options")
 
 
 class FillBlankQuestion(Question):
+    type: str = "fillblank"
     answer: str = Field(description="The correct word or phrase for the blank")

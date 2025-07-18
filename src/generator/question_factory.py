@@ -35,7 +35,7 @@ class QuestionFactory:
     @classmethod
     def create(cls, qtype: str, topic: str, difficulty: str = "medium") -> Question:
         try:
-            if qtype == "mcq":
+            if qtype == "Multiple Choice":
                 parser = PydanticOutputParser(pydantic_object=MCQuestion)
                 question = cls._retry_and_parse(
                     mcq_prompt_template, parser, topic, difficulty
@@ -48,7 +48,7 @@ class QuestionFactory:
                 cls.logger.info("Generated a valid MCQ")
                 return question
 
-            elif qtype == "fillblank":
+            elif qtype == "Fill in the Blank":
                 parser = PydanticOutputParser(pydantic_object=FillBlankQuestion)
                 question = cls._retry_and_parse(
                     fill_blank_prompt_template, parser, topic, difficulty
