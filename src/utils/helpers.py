@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from src.generator.question_factory import MCQFactory, FillBlankFactory, QuestionFactory
 from src.models.questions_schema import Question, MCQuestion, FillBlankQuestion
+from src.strategy.evaluation_strategy import MCQEvaluationStrategy, FillBlankEvaluationStrategy
 
 def rerun():
     st.session_state['rerun_trigger'] = not st.session_state.get('rerun_trigger', False)
@@ -11,29 +12,32 @@ class QuizManager:
     def __init__(self):
         self.questions = []
         self.user_answers = []
-        self.results =[]
+        self.results = []
 
-    def generate_questions(self, factory:QuestionFactory , topic:str , difficulty:str , num_questions:int):
-        self.questions=[]
-        self.user_answers=[]
-        self.results=[]
+    def generate_questions(self, factory: QuestionFactory, topic: str, difficulty: str, num_questions: int):
+        self.questions = []
+        self.user_answers = []
+        self.results = []
 
         try:
             for _ in range(num_questions):
                 question = factory.create_question(topic, difficulty.lower())
                 if isinstance(question, MCQuestion):
+                    strategy = MCQEvaluationStrategy()
                     self.questions.append({
-                        'type' : 'MCQ',
-                        'question' : question.question,
-                        'options' : question.options,
-                        'correct_answer': question.correct_answer
+                        'type': 'MCQ',
+                        'question': question.question,
+                        'options': question.options,
+                        'correct_answer': question.correct_answer,
+                        'strategy': strategy
                     })
-
                 elif isinstance(question, FillBlankQuestion):
+                    strategy = FillBlankEvaluationStrategy()
                     self.questions.append({
-                        'type' : 'Fill in the blank',
-                        'question' : question.question,
-                        'correct_answer': question.answer
+                        'type': 'Fill in the blank',
+                        'question': question.question,
+                        'correct_answer': question.answer,
+                        'strategy': strategy
                     })
                 else:
                     raise ValueError("Unknown question type")
@@ -44,46 +48,43 @@ class QuizManager:
         return True
 
     def attempt_quiz(self):
-        for i,q in enumerate(self.questions):
+        for i, q in enumerate(self.questions):
             st.markdown(f"**Question {i+1} : {q['question']}**")
 
-            if q['type']=='MCQ':
+            if q['type'] == 'MCQ':
                 user_answer = st.radio(
                     f"Select and answer for Question {i+1}",
                     q['options'],
                     key=f"mcq_{i}"
                 )
-
                 self.user_answers.append(user_answer)
-
             else:
-                user_answer=st.text_input(
+                user_answer = st.text_input(
                     f"Fill in the blank for Question {i+1}",
-                    key = f"fill_blank_{i}"
+                    key=f"fill_blank_{i}"
                 )
-
                 self.user_answers.append(user_answer)
 
     def evaluate_quiz(self):
-        self.results=[]
+        self.results = []
 
-        for i, (q,user_ans) in enumerate(zip(self.questions,self.user_answers)):
+        for i, (q, user_ans) in enumerate(zip(self.questions, self.user_answers)):
             result_dict = {
-                'question_number' : i+1,
+                'question_number': i + 1,
                 'question': q['question'],
-                'question_type' :q["type"],
-                'user_answer' : user_ans,
-                'correct_answer' : q["correct_answer"],
-                "is_correct" : False
+                'question_type': q["type"],
+                'user_answer': user_ans,
+                'correct_answer': q["correct_answer"],
+                "is_correct": False
             }
 
             if q['type'] == 'MCQ':
                 result_dict['options'] = q['options']
-                result_dict["is_correct"] = user_ans == q["correct_answer"]
-
             else:
                 result_dict['options'] = []
-                result_dict["is_correct"] = user_ans.strip().lower() == q['correct_answer'].strip().lower()
+
+            # Use the strategy stored with the question
+            result_dict["is_correct"] = q['strategy'].evaluate(user_ans, q["correct_answer"])
 
             self.results.append(result_dict)
 
@@ -100,16 +101,15 @@ class QuizManager:
         
         df = self.generate_result_dataframe()
 
-
         from datetime import datetime
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         unique_filename = f"{filename_prefix}_{timestamp}.csv"
 
-        os.makedirs('results' , exist_ok=True)
-        full_path = os.path.join('results' , unique_filename)
+        os.makedirs('results', exist_ok=True)
+        full_path = os.path.join('results', unique_filename)
 
         try:
-            df.to_csv(full_path,index=False)
+            df.to_csv(full_path, index=False)
             st.success("Results saved sucesfully....")
             return full_path
         
