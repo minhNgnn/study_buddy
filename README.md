@@ -1,8 +1,9 @@
 # Study Buddy
 
-A modern, LLM-powered quiz and study system that leverages advanced system design patterns for maintainability, extensibility, and robustness.
+A modern, end-to-end **LLMOps** quiz and study system that leverages large language models and advanced system design patterns for maintainability, extensibility, and robustness. This project covers the full lifecycle from LLM-powered question generation to deployment and monitoring, following best practices in LLMOps.
 
 ## 🚀 Features
+- **End-to-End LLMOps:** Complete workflow from prompt engineering, LLM-powered question generation, evaluation, to deployment and monitoring.
 - **LLM-Powered Quiz Generation:** Uses large language models to generate multiple-choice and fill-in-the-blank questions on any topic and difficulty.
 - **System Design Patterns:** Incorporates Factory, Strategy, and Template Method patterns for clean, modular, and extensible code.
 - **Beautiful Streamlit UI:** Interactive, user-friendly web interface for quiz taking and results review.
