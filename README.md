@@ -1,4 +1,11 @@
+<div align="center">
+
 # Study Buddy
+
+</div>
+
+<div align="center">
+
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
@@ -7,6 +14,9 @@
 ![python-dotenv](https://img.shields.io/badge/python--dotenv-000000?style=for-the-badge)
 ![pre-commit](https://img.shields.io/badge/pre--commit-FAB040?style=for-the-badge&logo=pre-commit&logoColor=black)
 ![GROQ](https://img.shields.io/badge/GROQ-000000?style=for-the-badge)
+
+
+</div>
 
 A modern, end-to-end **LLMOps** quiz and study system that leverages large language models and advanced system design patterns for maintainability, extensibility, and robustness. This project covers the full lifecycle from LLM-powered question generation to deployment and monitoring, following best practices in LLMOps.
 
